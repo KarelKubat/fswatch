@@ -1,0 +1,32 @@
+# Makefile for fswatch
+# --------------------
+
+SRC    = $(wildcard *.cc)
+OBJ    = $(patsubst %.cc, %.o, $(SRC))
+PRG    = fswatch
+BINDIR = $$HOME/bin
+TAR    = /tmp/fswatch.tar.gz
+AUTHOR = "Karel Kubat <karel@kubat.nl>"
+URL    = "http://www.kubat.nl/pages/fswatch"
+YEARS  = "2015 ff."
+VER    = "1.00"
+
+$(PRG): $(OBJ)
+	c++ -g -o $(PRG) $(OBJ)
+clean:
+	rm -f $(OBJ) $(PRG)
+
+dist: clean
+	(cd .. && tar cvzf $(TAR) fswatch/)
+	@echo
+	@echo "Distribution ready as $(TAR)"
+
+install: $(PRG)
+	cp $(PRG) $(BINDIR)/$(PRG)
+	strip $(BINDIR)/$(PRG)
+
+%.o: %.cc
+	c++ -g -c -Werror -Wall -DAUTHOR=\"$(AUTHOR)\" \
+	    -DYEARS=\"$(YEARS)\" -DVER=\"$(VER)\" -DURL=\"$(URL)\" $<
+
+usage.o: usage.cc Makefile

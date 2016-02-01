@@ -3,6 +3,7 @@
 #include "messager.h"
 
 static bool gen_warnings = true;
+static std::unordered_map<std::string, bool> filewarning;
 
 void FsState::listdir(char const *dir) {
   DIR *d = opendir(dir);
@@ -25,8 +26,11 @@ void FsState::listdir(char const *dir) {
     struct stat statbuf;
     if (stat(fname.c_str(), &statbuf)) {
       if (gen_warnings)
-        warn << "[fswatch] cannot stat " << fname << ": "
-             << strerror(errno) << "\n";
+        if (! filewarning[fname]) {
+          filewarning[fname] = true;
+          warn << "[fswatch] cannot stat " << fname << ": "
+               << strerror(errno) << "\n";
+        }
       continue;
     }
 

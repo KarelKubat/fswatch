@@ -26,7 +26,7 @@ install: $(PRG)
 	strip $(BINDIR)/$(PRG)
 
 %.o: %.cc
-	c++ -g -c -Werror -Wall -DAUTHOR=\"$(AUTHOR)\" \
+	c++ -std=c++11 -g -c -Werror -Wall -DAUTHOR=\"$(AUTHOR)\" \
 	    -DYEARS=\"$(YEARS)\" -DVER=\"$(VER)\" -DURL=\"$(URL)\" $<
 
 usage.o: usage.cc Makefile

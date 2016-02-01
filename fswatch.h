@@ -14,6 +14,8 @@
 
 #include <iostream>
 #include <string>
+#include <unordered_map>
+
 #include "messager.h"
 extern Messager msg;
 extern Messager err;

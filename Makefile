@@ -17,7 +17,7 @@ clean:
 	rm -f $(OBJ) $(PRG)
 
 dist: clean
-	(cd .. && tar cvzf $(TAR) fswatch/)
+	(cd .. && tar -c -v -z -f $(TAR) --exclude .git fswatch/)
 	@echo
 	@echo "Distribution ready as $(TAR)"
 

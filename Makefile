@@ -1,15 +1,15 @@
 # Makefile for fswatch
 # --------------------
 
-SRC    = $(wildcard *.cc)
-OBJ    = $(patsubst %.cc, %.o, $(SRC))
-PRG    = fswatch
-BINDIR = $$HOME/bin
-TAR    = /tmp/fswatch.tar.gz
-AUTHOR = "Karel Kubat <karel@kubat.nl>"
-URL    = "http://www.kubat.nl/pages/fswatch"
-YEARS  = "2015 ff."
-VER    = "1.00"
+SRC     = $(wildcard *.cc)
+OBJ     = $(patsubst %.cc, %.o, $(SRC))
+PRG     = fswatch
+BINDIR ?= $$HOME/bin
+TAR    ?= /tmp/fswatch.tar.gz
+AUTHOR  = "Karel Kubat <karel@kubat.nl>"
+URL     = "http://www.kubat.nl/pages/fswatch"
+YEARS   = "2015 ff."
+VER     = "1.00"
 
 $(PRG): $(OBJ)
 	c++ -g -o $(PRG) $(OBJ)

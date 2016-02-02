@@ -4,7 +4,8 @@
 
 bool FsState::differs(FsState const &other) const {
   if (sz != other.sz) {
-    msg << "[fswatch] number of entries has changed\n";
+    msg << "[fswatch] number of entries has changed from "
+        << sz << " to " << other.sz << "\n";
     return true;
   }
   for (unsigned i = 0; i < sz; i++) {

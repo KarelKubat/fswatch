@@ -65,6 +65,7 @@ int main(int argc, char **argv) {
   char **command = argv + optind;
 
   FsState state(watchdir);
+  // state.dump("initial");
 
   Cmd *cmd = new Cmd(command);
   bool statechanged = false;
@@ -72,14 +73,19 @@ int main(int argc, char **argv) {
     if (sleep(interval))
       err << "[fswatch] sleep interrupted\n";
 
-    if (cmd->reap() && cmd->exited())
+    if (cmd->reap() && cmd->exited()) {
       msg << "[fswatch] " << command[0] << " exited with status "
 	  << cmd->exitstatus() << "\n";
-
-    FsState nextstate(watchdir);
-    if (state.differs(nextstate)) {
-      statechanged = true;
-      state = nextstate;
+      state.rescan();
+      // state.dump("rescanned after cmd");
+      statechanged = false;
+    } else {
+      FsState nextstate(watchdir);
+      // nextstate.dump("next state");
+      if (state.differs(nextstate)) {
+        statechanged = true;
+        state = nextstate;
+      }
     }
 
     if (statechanged) {

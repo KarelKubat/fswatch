@@ -11,14 +11,20 @@ class FsState {
   FsState(char const *dir);
   unsigned size() const;
   bool differs(FsState const &other) const;
+  void rescan();
+
+  // for debugging
+  void dump(std::string title) const;
 
  private:
   typedef struct {
     std::string name;
     struct stat statbuf;
   } Entry;
+
+  std::string sdir;
   std::vector<Entry> entry;
-  void listdir(char const *dir);
+  void listdir(std::string d);
   unsigned sz;
 };
 

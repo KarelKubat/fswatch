@@ -5,11 +5,11 @@
 static bool gen_warnings = true;
 static std::unordered_map<std::string, bool> filewarning;
 
-void FsState::listdir(char const *dir) {
-  DIR *d = opendir(dir);
+void FsState::listdir(std::string sdir) {
+  DIR *d = opendir(sdir.c_str());
   if (! d) {
     if (gen_warnings)
-      warn << "[fswatch] cannot read " << dir << ": "
+      warn << "[fswatch] cannot read " << sdir << ": "
            << strerror(errno) << "\n";
     return;
   }
@@ -20,7 +20,7 @@ void FsState::listdir(char const *dir) {
     if (!strcmp(direntry->d_name, ".") || !strcmp(direntry->d_name, ".."))
       continue;
     // Build up full path & stat it
-    std::string fname = dir;
+    std::string fname = sdir;
     fname += "/";
     fname += direntry->d_name;
     struct stat statbuf;
@@ -36,7 +36,7 @@ void FsState::listdir(char const *dir) {
 
     // Recurse into subdirs, store true files
     if (statbuf.st_mode & S_IFDIR)
-      listdir(fname.c_str());
+      listdir(fname);
     else if (statbuf.st_mode & S_IFREG) {
       Entry e = { fname, statbuf };
       entry.push_back(e);

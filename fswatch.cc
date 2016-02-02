@@ -9,6 +9,7 @@ Messager warn(true, false, &std::cerr);
 static char curdir[] = ".";
 
 int main(int argc, char **argv) {
+  // Default flag values
   unsigned interval = 1;	// dirscan interval
   unsigned timeout = 0;		// timeout for external cmd
   unsigned killwait = 1;	// time between sigs when killing cmd
@@ -16,15 +17,15 @@ int main(int argc, char **argv) {
 
   // Parse the command line
   struct option opts[] = {
-    { "dir", required_argument, 0, 0 },
-    { "help", no_argument, 0, 0 },
+    { "dir",      required_argument, 0, 0 },
+    { "help",     no_argument,       0, 0 },
     { "interval", required_argument, 0, 0 },
     { "killwait", required_argument, 0, 0 },
-    { "silent", no_argument, 0, 0 },
-    { "timeout", required_argument, 0, 0 },
+    { "silent",   no_argument,       0, 0 },
+    { "timeout",  required_argument, 0, 0 },
   };
   int opt;
-  while ( (opt = getopt_long(argc, argv, "d:hi:k:st:", opts, 0)) > 0 ) {
+  while ( (opt = getopt_long(argc, argv, "d:hi:k:lst:", opts, 0)) > 0 ) {
     switch (opt) {
     case 'd':
       if (! optarg || ! *optarg)

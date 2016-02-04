@@ -9,7 +9,7 @@ TAR    ?= /tmp/fswatch.tar.gz
 AUTHOR  = "Karel Kubat <karel@kubat.nl>"
 URL     = "http://www.kubat.nl/pages/fswatch"
 YEARS   = "2015 ff."
-VER     = "1.01"
+VER     = "1.02"
 
 $(PRG): $(OBJ)
 	c++ -g -o $(PRG) $(OBJ)
@@ -21,8 +21,10 @@ dist: clean
 	@echo
 	@echo "Distribution ready as $(TAR)"
 
-install: $(PRG)
-	cp $(PRG) $(BINDIR)/$(PRG)
+install: $(BINDIR)/$(PRG)
+
+$(BINDIR)/$(PRG): $(PRG)
+	mv $(PRG) $(BINDIR)/$(PRG)
 	strip $(BINDIR)/$(PRG)
 
 %.o: %.cc

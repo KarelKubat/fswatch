@@ -17,15 +17,15 @@ int main(int argc, char **argv) {
 
   // Parse the command line
   struct option opts[] = {
-    { "dir",      required_argument, 0, 0 },
-    { "help",     no_argument,       0, 0 },
-    { "interval", required_argument, 0, 0 },
-    { "killwait", required_argument, 0, 0 },
-    { "silent",   no_argument,       0, 0 },
-    { "timeout",  required_argument, 0, 0 },
+    { "dir",      required_argument, 0, 'd' },
+    { "help",     no_argument,       0, 'h' },
+    { "interval", required_argument, 0, 'i' },
+    { "killwait", required_argument, 0, 'k' },
+    { "silent",   no_argument,       0, 's' },
+    { "timeout",  required_argument, 0, 't' },
   };
   int opt;
-  while ( (opt = getopt_long(argc, argv, "d:hi:k:lst:", opts, 0)) > 0 ) {
+  while ( (opt = getopt_long(argc, argv, "d:hi:k:st:", opts, 0)) > 0 ) {
     switch (opt) {
     case 'd':
       if (! optarg || ! *optarg)

@@ -2,13 +2,16 @@
 #include "fsstate.h"
 #include "messager.h"
 
-static bool gen_warnings = true;
 static std::unordered_map<std::string, bool> filewarning;
 
 void FsState::listdir(std::string sdir) {
+  // Show what's getting listed, but only upon program startup
+  if (! be_silent)
+    msg << "[fsstate]  " << sdir << " ...\n";
+
   DIR *d = opendir(sdir.c_str());
   if (! d) {
-    if (gen_warnings)
+    if (! be_silent)
       warn << "[fswatch] cannot read " << sdir << ": "
            << strerror(errno) << "\n";
     return;
@@ -25,7 +28,6 @@ void FsState::listdir(std::string sdir) {
     fname += direntry->d_name;
     struct stat statbuf;
     if (stat(fname.c_str(), &statbuf)) {
-      if (gen_warnings)
         if (! filewarning[fname]) {
           filewarning[fname] = true;
           warn << "[fswatch] cannot stat " << fname << ": "

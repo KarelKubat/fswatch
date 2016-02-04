@@ -26,6 +26,7 @@ class FsState {
   std::vector<Entry> entry;
   void listdir(std::string d);
   unsigned sz;
+  static bool be_silent;
 };
 
 #endif // _FSSTATE_H_

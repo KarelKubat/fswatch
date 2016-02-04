@@ -15,7 +15,6 @@ void usage() {
 "  --                      ends flags, useful when you have -options in ARGS\n"
 "  --help, -h:             this help\n"
 "  --dir DIR, -d DIR       watches DIR instead of current directory\n"
-"  --line, -l              print line before starting COMMAND (visual clue)\n"
 "  --silent, -s            decreases verbosity\n"
 "\n"
 "Flags related to file system polling:\n"

@@ -95,8 +95,9 @@ int main(int argc, char **argv) {
 	statechanged = false;
       } else {
 	if (timeout > 0 && cmd->runtime() > timeout) {
-	  msg << "[fswatch] " << command[0] << " exceeded timeout " << timeout
-	      << " secs, runtime " << cmd->runtime() << ", restarting\n";
+          msg << "[fswatch] change detected and " << command[0]
+              << " running already for " << cmd->runtime()
+              << " secs, restarting\n";
 	  cmd->hose(killwait);
 	  delete cmd;
 	  cmd = new Cmd(command);

@@ -6,65 +6,81 @@ Messager msg(true, false, &std::cout);
 Messager err(true, true, &std::cerr);
 Messager warn(true, false, &std::cerr);
 
-static char curdir[] = ".";
-
 int main(int argc, char **argv) {
   // Default flag values
-  unsigned interval = 1;	// dirscan interval
-  unsigned timeout = 0;		// timeout for external cmd
-  unsigned killwait = 1;	// time between sigs when killing cmd
-  char *watchdir = curdir;	// watched dir
+  unsigned interval = 1;	 	// dirscan interval
+  unsigned timeout = 0;		 	// timeout for external cmd
+  unsigned killwait = 1;	        // time between sigs when killing cmd
+  unsigned restartwait = 2;             // FS settle time before restarting cmd
+  bool keepscanning = false;            // keep scanning even when empty dir
+  std::vector<std::string> watchdirs;   // dirs to watch
 
   // Parse the command line
   struct option opts[] = {
-    { "dir",      required_argument, 0, 'd' },
-    { "help",     no_argument,       0, 'h' },
-    { "interval", required_argument, 0, 'i' },
-    { "killwait", required_argument, 0, 'k' },
-    { "silent",   no_argument,       0, 's' },
-    { "timeout",  required_argument, 0, 't' },
+    { "dir",          required_argument, 0, 'd' },
+    { "help",         no_argument,       0, 'h' },
+    { "interval",     required_argument, 0, 'i' },
+    { "keepscanning", no_argument,       0, 'K' },
+    { "killwait",     required_argument, 0, 'k' },
+    { "restartwait",  required_argument, 0, 'r' },
+    { "silent",       no_argument,       0, 's' },
+    { "timeout",      required_argument, 0, 't' },
   };
   int opt;
-  while ( (opt = getopt_long(argc, argv, "d:hi:k:st:", opts, 0)) > 0 ) {
+  while ( (opt = getopt_long(argc, argv, "d:hi:Kk:r:st:", opts, 0)) > 0 ) {
     switch (opt) {
-    case 'd':
-      if (! optarg || ! *optarg)
-	err << "[fswatch] missing --dir value\n";
-      watchdir = optarg;
-      break;
-    case 'h':
-      usage();
-      break;
-    case 'i':
-      if (! optarg || ! *optarg)
-	err << "[fswatch] missing --interval value\n";
-      if (sscanf(optarg, "%u", &interval) < 1)
-	err << "[fswatch] bad --interval " << optarg << ": not a number\n";
-      break;
-    case 'k':
-      if (! optarg || ! *optarg)
-	err << "[fswatch] missing --killwait value\n";
-      if (sscanf(optarg, "%u", &killwait) < 1)
-	err << "[fswatch] bad --killwait " << optarg << ": not a number\n";
-      break;
-    case 's':
-      msg.active(false);
-      break;
-    case 't':
-      if (! optarg || ! *optarg)
-	err << "[fswatch] missing --timeout value\n";
-      if (sscanf(optarg, "%u", &timeout) < 1)
-	err << "[fswatch] bad --timeout " << optarg << ": not a number\n";
-      break;
-    default:
-      usage();
+      case 'd':
+        if (! optarg || ! *optarg)
+          err << "[fswatch] missing --dir value\n";
+        watchdirs.push_back(optarg);
+        break;
+      case 'h':
+        usage();
+        break;
+      case 'i':
+        if (! optarg || ! *optarg)
+          err << "[fswatch] missing --interval value\n";
+        if (sscanf(optarg, "%u", &interval) < 1)
+          err << "[fswatch] bad --interval " << optarg << ": not a number\n";
+        break;
+      case 'K':
+        keepscanning = true;
+        break;
+      case 'k':
+        if (! optarg || ! *optarg)
+          err << "[fswatch] missing --killwait value\n";
+        if (sscanf(optarg, "%u", &killwait) < 1)
+          err << "[fswatch] bad --killwait " << optarg << ": not a number\n";
+        break;
+      case 'r':
+        if (! optarg || ! *optarg)
+          err << "[fswatch] missing --restartwait value\n";
+        if (sscanf(optarg, "%u", &restartwait) < 1)
+          err << "[fswatch] bad --restartwait " << optarg << ": not a number\n";
+        break;
+      case 's':
+        msg.active(false);
+        break;
+      case 't':
+        if (! optarg || ! *optarg)
+          err << "[fswatch] missing --timeout value\n";
+        if (sscanf(optarg, "%u", &timeout) < 1)
+          err << "[fswatch] bad --timeout " << optarg << ": not a number\n";
+        break;
+      default:
+        usage();
     }
   }
   if (argc - optind < 1)
     usage();
+
   char **command = argv + optind;
 
-  FsState state(watchdir);
+  // Watch cwd if no --dirs were seen.
+  if (!watchdirs.size())
+    watchdirs.push_back(".");
+
+  FsState state(watchdirs, keepscanning);
   // state.dump("initial");
 
   Cmd *cmd = new Cmd(command);
@@ -76,11 +92,11 @@ int main(int argc, char **argv) {
     if (cmd->reap() && cmd->exited()) {
       msg << "[fswatch] " << command[0] << " exited with status "
 	  << cmd->exitstatus() << "\n";
-      state.rescan();
+      state.rescan(keepscanning);
       // state.dump("rescanned after cmd");
       statechanged = false;
     } else {
-      FsState nextstate(watchdir);
+      FsState nextstate(watchdirs, keepscanning);
       // nextstate.dump("next state");
       if (state.differs(nextstate)) {
         statechanged = true;
@@ -91,6 +107,8 @@ int main(int argc, char **argv) {
     if (statechanged) {
       if (! cmd->running()) {
 	delete cmd;
+        if (restartwait)
+          sleep(restartwait);
 	cmd = new Cmd(command);
 	statechanged = false;
       } else {
@@ -100,7 +118,9 @@ int main(int argc, char **argv) {
               << " secs, restarting\n";
 	  cmd->hose(killwait);
 	  delete cmd;
-	  cmd = new Cmd(command);
+          if (restartwait)
+            sleep(restartwait);
+          cmd = new Cmd(command);
 	  statechanged = false;
 	}
       }

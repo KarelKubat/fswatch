@@ -15,6 +15,7 @@
 #include <iostream>
 #include <string>
 #include <unordered_map>
+#include <vector>
 
 #include "messager.h"
 extern Messager msg;

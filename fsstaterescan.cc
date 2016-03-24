@@ -1,12 +1,42 @@
 #include "fswatch.h"
 #include "fsstate.h"
 
-void FsState::rescan() {
+void FsState::rescan(bool keepscanning) {
+  static bool warning_generated;
+
   entry.clear();
   sz = 0;
-  if (! be_silent)
-    msg << "[fswatch] listing top level target " << sdir << "\n";
-  listdir(sdir);
-  if (! sz)
-    err << "[fswatch] nothing to watch under " << sdir << "\n";
+  if (! be_silent) {
+    msg << "[fswatch] listing top level targets";
+    for (unsigned i = 0; i < sdirs.size(); i++) {
+      msg << ' ' << sdirs[i];
+    }
+    msg << '\n';
+  }
+
+  for (unsigned i = 0; i < sdirs.size(); i++)
+    listdir(sdirs[i]);
+
+  if (! sz) {
+    if (! keepscanning) {
+      err << "[fswatch] nothing to watch under" ;
+      for (unsigned i = 0; i < sdirs.size(); i++)
+        err << ' ' << sdirs[i];
+      err << '\n';
+    }
+    else {
+      if (!warning_generated) {
+        // Make sure that we print this only once else we keep
+        // spamming the screen.
+        warning_generated = true;
+        msg << "[fswatch] nothing to watch under";
+        for (unsigned i = 0; i < sdirs.size(); i++)
+          msg << ' ' << sdirs[i];
+        msg << " but continuing\n";
+      }
+    }
+  } else {
+    // Next time a warning may be shown.
+    warning_generated = false;
+  }
 }

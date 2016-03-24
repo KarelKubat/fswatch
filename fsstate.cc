@@ -4,7 +4,8 @@
 
 bool FsState::be_silent;
 
-FsState::FsState(char const *dir): sdir(dir), sz(0)  {
-  rescan();
+FsState::FsState(std::vector<std::string> dirs, bool keepscanning):
+    sdirs(dirs), sz(0)  {
+  rescan(keepscanning);
   be_silent = true;
 }

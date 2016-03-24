@@ -7,7 +7,7 @@ static std::unordered_map<std::string, bool> filewarning;
 void FsState::listdir(std::string sdir) {
   // Show what's getting listed, but only upon program startup
   if (! be_silent)
-    msg << "[fsstate]  " << sdir << " ...\n";
+    msg << "[fswatch]  " << sdir << " ...\n";
 
   DIR *d = opendir(sdir.c_str());
   if (! d) {

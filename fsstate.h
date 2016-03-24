@@ -8,10 +8,10 @@
 
 class FsState {
  public:
-  FsState(char const *dir);
+  FsState(std::vector<std::string> dirs, bool keepscanning = false);
   unsigned size() const;
   bool differs(FsState const &other) const;
-  void rescan();
+  void rescan(bool keepscanning = false);
 
   // for debugging
   void dump(std::string title) const;
@@ -22,7 +22,7 @@ class FsState {
     struct stat statbuf;
   } Entry;
 
-  std::string sdir;
+  std::vector<std::string> sdirs;
   std::vector<Entry> entry;
   void listdir(std::string d);
   unsigned sz;

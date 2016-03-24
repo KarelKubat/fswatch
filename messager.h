@@ -11,6 +11,8 @@ class Messager {
   Messager &operator<< (std::string s);
   Messager &operator<< (int i);
   Messager &operator<< (unsigned u);
+  Messager &operator<< (char c);
+  Messager &operator<< (unsigned char c);
   bool active(bool act);
 
  private:

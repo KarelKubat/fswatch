@@ -7,7 +7,7 @@ void FsState::rescan(bool keepscanning) {
   entry.clear();
   sz = 0;
   if (! be_silent) {
-    msg << "[fswatch] listing top level targets";
+    msg << "[fswatch] listing top level target(s)";
     for (unsigned i = 0; i < sdirs.size(); i++) {
       msg << ' ' << sdirs[i];
     }

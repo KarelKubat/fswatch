@@ -8,10 +8,11 @@
 
 class FsState {
  public:
-  FsState(std::vector<std::string> dirs, bool keepscanning = false);
+  FsState(std::vector<std::string> dirs, bool keepscanning = false,
+          bool scanallfiles = false);
   unsigned size() const;
   bool differs(FsState const &other) const;
-  void rescan(bool keepscanning = false);
+  void rescan(bool keepscanning = false, bool scanallfiles = false);
 
   // for debugging
   void dump(std::string title) const;
@@ -24,7 +25,7 @@ class FsState {
 
   std::vector<std::string> sdirs;
   std::vector<Entry> entry;
-  void listdir(std::string d);
+  void listdir(std::string d, bool scanallfiles);
   unsigned sz;
   static bool be_silent;
 };

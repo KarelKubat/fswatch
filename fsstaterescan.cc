@@ -1,7 +1,7 @@
 #include "fswatch.h"
 #include "fsstate.h"
 
-void FsState::rescan(bool keepscanning) {
+void FsState::rescan(bool keepscanning, bool scanallfiles) {
   static bool warning_generated;
 
   entry.clear();
@@ -15,7 +15,7 @@ void FsState::rescan(bool keepscanning) {
   }
 
   for (unsigned i = 0; i < sdirs.size(); i++)
-    listdir(sdirs[i]);
+    listdir(sdirs[i], scanallfiles);
 
   if (! sz) {
     if (! keepscanning) {

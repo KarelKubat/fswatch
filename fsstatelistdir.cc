@@ -4,7 +4,7 @@
 
 static std::unordered_map<std::string, bool> filewarning;
 
-void FsState::listdir(std::string sdir) {
+void FsState::listdir(std::string sdir, bool scanallfiles) {
   // Show what's getting listed, but only upon program startup
   if (! be_silent)
     msg << "[fswatch]  " << sdir << " ...\n";
@@ -22,6 +22,13 @@ void FsState::listdir(std::string sdir) {
     // Skip . and ..
     if (!strcmp(direntry->d_name, ".") || !strcmp(direntry->d_name, ".."))
       continue;
+
+    // Ingnore editor savefiles etc
+    if ( (!scanallfiles && strlen(direntry->d_name) > 0) &&
+         (direntry->d_name[0] == '#' || direntry->d_name[0] == '~' ||
+          direntry->d_name[0] == '.') )
+      continue;
+
     // Build up full path & stat it
     std::string fname = sdir;
     fname += "/";
@@ -38,7 +45,7 @@ void FsState::listdir(std::string sdir) {
 
     // Recurse into subdirs, store true files
     if (statbuf.st_mode & S_IFDIR)
-      listdir(fname);
+      listdir(fname, scanallfiles);
     else if (statbuf.st_mode & S_IFREG) {
       Entry e = { fname, statbuf };
       entry.push_back(e);

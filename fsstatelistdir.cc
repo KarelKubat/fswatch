@@ -5,6 +5,10 @@
 static std::unordered_map<std::string, bool> filewarning;
 
 void FsState::listdir(std::string sdir, bool scanallfiles) {
+  // Avoid double slashes
+  if (sdir.length() > 1 && sdir[sdir.length() - 1] == '/')
+    sdir.resize(sdir.length() - 1);
+
   // Show what's getting listed, but only upon program startup
   if (! be_silent)
     msg << "[fswatch]  " << sdir << " ...\n";

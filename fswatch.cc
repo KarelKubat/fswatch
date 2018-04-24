@@ -16,9 +16,10 @@ static void dieded(int sig) {		// signal catcher
 }
 
 int main(int argc, char **argv) {
-  // Default flag values
+  // Default flag values. Note - not synced with usage.cc,
+  // apply text changes when modifying this.
   unsigned interval = 1;	 	// dirscan interval
-  unsigned timeout = 0;		 	// timeout for external cmd
+  unsigned timeout = 30;	 	// timeout for external cmd
   unsigned killwait = 1;	        // time between sigs when killing cmd
   unsigned restartwait = 2;             // FS settle time before restarting cmd
   bool keepscanning = false;            // keep scanning even when empty dir

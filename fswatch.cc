@@ -109,9 +109,16 @@ int main(int argc, char **argv) {
     if (sleep(interval))
       err << "[fswatch] sleep interrupted\n";
 
-    if (cmd->reap() && cmd->exited()) {
-      msg << "[fswatch] " << command[0] << " exited with status "
-	  << cmd->exitstatus() << "\n";
+    if (cmd->reap()) {
+      if (cmd->exited())
+        msg << "[fswatch] " << command[0] << " exited with status "
+            << cmd->exitstatus() << '\n';
+      if (cmd->signalled()) {
+          msg << "[fswatch] " << command[0] << " was signalled by "
+              << cmd->termsig() << '\n';
+          if (cmd->coredumped())
+            msg << "[fswatch] " << command[0] << " and coredumped\n";
+      }
       state.rescan(keepscanning);
       // state.dump("rescanned after cmd");
       statechanged = false;

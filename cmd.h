@@ -5,6 +5,9 @@ class Cmd {
   bool reap();
   bool exited() const;
   int exitstatus() const;
+  bool signalled() const;
+  int termsig() const;
+  bool coredumped() const;
   bool running() const;
   void hose(unsigned killwait);
   unsigned runtime() const;

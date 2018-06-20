@@ -1,6 +1,7 @@
 #ifndef _FSSTATE_H_
 #define _FSSTATE_H_
 
+#include <algorithm>
 #include <dirent.h>
 #include <sys/stat.h>
 #include <string>
@@ -17,15 +18,18 @@ class FsState {
   // for debugging
   void dump(std::string title) const;
 
- private:
+  // Entry must be public so that the helper function for sorting sees it,
+  // see fsstatesortentries.cc
   typedef struct {
     std::string name;
     struct stat statbuf;
   } Entry;
 
+ private:
   std::vector<std::string> sdirs;
   std::vector<Entry> entry;
   void listdir(std::string d, bool scanallfiles);
+  void sortentries();
   unsigned sz;
   static bool be_silent;
 };

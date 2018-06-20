@@ -16,6 +16,7 @@ void FsState::rescan(bool keepscanning, bool scanallfiles) {
 
   for (unsigned i = 0; i < sdirs.size(); i++)
     listdir(sdirs[i], scanallfiles);
+  sortentries();
 
   if (! sz) {
     if (! keepscanning) {

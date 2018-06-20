@@ -9,7 +9,7 @@ TAR    ?= /tmp/fswatch.tar.gz
 AUTHOR  = "Karel Kubat <karel@kubat.nl>"
 URL     = "http://www.kubat.nl/pages/fswatch"
 YEARS   = "2015 ff."
-VER     = "1.11"
+VER     = "1.12"
 
 $(PRG): $(OBJ)
 	c++ -g -o $(PRG) $(OBJ)
@@ -32,3 +32,9 @@ $(BINDIR)/$(PRG): $(PRG)
 	    -DYEARS=\"$(YEARS)\" -DVER=\"$(VER)\" -DURL=\"$(URL)\" $<
 
 usage.o: usage.cc Makefile
+
+me:
+	@true
+a:
+	@true
+sandwich: install

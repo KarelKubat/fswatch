@@ -72,8 +72,10 @@ Clone the repository and simply type `make`. You will need a C++ compiler. This
 makes `fswatch` locally (in the sources directory).
 
 If you want to install the program into `$HOME/bin` (i.e., your personal *bin*
-directory), then type `make install`. If you want to install it into another
-directory, e.g. `/usr/local/bin`, type
+directory), then type `make install` (or `make me a sandwich` if you are so
+inclined). 
+
+If you want to install it into another directory, e.g. `/usr/local/bin`, type
 
 ```shell
 BINDIR=/usr/local/bin make install

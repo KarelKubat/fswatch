@@ -25,11 +25,13 @@ int main(int argc, char **argv) {
   bool keepscanning = false;            // keep scanning even when empty dir
   bool allfiles = false;		// also scan #file etc
   std::vector<std::string> watchdirs;   // dirs to watch
+  std::vector<std::string> watchfiles;  // files to watch
 
   // Parse the command line
   struct option opts[] = {
     { "allfiles",     no_argument,       0, 'a' },
     { "dir",          required_argument, 0, 'd' },
+    { "file",         required_argument, 0, 'f' },
     { "help",         no_argument,       0, 'h' },
     { "interval",     required_argument, 0, 'i' },
     { "keepscanning", no_argument,       0, 'K' },
@@ -39,7 +41,7 @@ int main(int argc, char **argv) {
     { "timeout",      required_argument, 0, 't' },
   };
   int opt;
-  while ( (opt = getopt_long(argc, argv, "d:hi:Kk:r:st:", opts, 0)) > 0 ) {
+  while ( (opt = getopt_long(argc, argv, "ad:f:hi:Kk:r:st:", opts, 0)) > 0 ) {
     switch (opt) {
       case 'a':
         allfiles = true;
@@ -48,6 +50,11 @@ int main(int argc, char **argv) {
         if (! optarg || ! *optarg)
           err << "[fswatch] missing --dir value\n";
         watchdirs.push_back(optarg);
+        break;
+      case 'f':
+        if (! optarg || ! *optarg)
+          err << "[fswatch] missing --file value\n";
+        watchfiles.push_back(optarg);
         break;
       case 'h':
         usage();
@@ -91,11 +98,11 @@ int main(int argc, char **argv) {
 
   char **command = argv + optind;
 
-  // Watch cwd if no --dirs were seen.
-  if (!watchdirs.size())
+  // Watch cwd if no --dirs were seen and no --file is given.
+  if (!watchfiles.size())
     watchdirs.push_back(".");
 
-  FsState state(watchdirs, keepscanning, allfiles);
+  FsState state(watchdirs, watchfiles, keepscanning, allfiles);
   // state.dump("initial");
 
   signal(SIGINT, dieded);
@@ -123,7 +130,7 @@ int main(int argc, char **argv) {
       // state.dump("rescanned after cmd");
       statechanged = false;
     } else {
-      FsState nextstate(watchdirs, keepscanning, allfiles);
+      FsState nextstate(watchdirs, watchfiles, keepscanning, allfiles);
       // nextstate.dump("next state");
       if (state.differs(nextstate)) {
         statechanged = true;

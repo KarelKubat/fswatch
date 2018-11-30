@@ -8,10 +8,27 @@ void FsState::rescan(bool keepscanning, bool scanallfiles) {
   sz = 0;
   if (! be_silent) {
     msg << "[fswatch] listing top level target(s)";
-    for (unsigned i = 0; i < sdirs.size(); i++) {
+    for (unsigned i = 0; i < sfiles.size(); i++)
+      msg << ' ' << sfiles[i];
+    for (unsigned i = 0; i < sdirs.size(); i++)
       msg << ' ' << sdirs[i];
-    }
     msg << '\n';
+  }
+
+  for (unsigned i = 0; i < sfiles.size(); i++) {
+    struct stat statbuf;
+    if (stat(sfiles[i].c_str(), &statbuf)) {
+      warn << "[fswatch] cannot stat " << sfiles[i] << ": "
+           << strerror(errno) << '\n';
+      continue;
+    }
+    if (! (statbuf.st_mode & S_IFREG)) {
+      warn << "[fswatch] " << sfiles[i] << " is not a regular file\n";
+      continue;
+    }
+    Entry e = { sfiles[i], statbuf };
+    entry.push_back(e);
+    sz++;
   }
 
   for (unsigned i = 0; i < sdirs.size(); i++)

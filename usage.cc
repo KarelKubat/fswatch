@@ -21,6 +21,7 @@ void usage() {
 "                          save-files starting with #,~,.\n"
 "  --dir DIR, -d DIR       watches DIR instead of current directory\n"
 "                          flag can be repeated to watch multiple dirs\n"
+"  --file FILE, -f FILE    watches FILE for changes (repeatable flag)\n"      
 "  --interval SEC, -i SEC  poll interval of the filesystem (default: 1s)\n"
 "  --keepscanning, -K      keep scanning even when DIRs become empty\n"
 "                          (default: stop)\n"

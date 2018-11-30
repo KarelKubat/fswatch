@@ -27,7 +27,7 @@ void FsState::listdir(std::string sdir, bool scanallfiles) {
     if (!strcmp(direntry->d_name, ".") || !strcmp(direntry->d_name, ".."))
       continue;
 
-    // Ingnore editor savefiles etc
+    // Ignore editor savefiles etc
     if ( (!scanallfiles && strlen(direntry->d_name) > 0) &&
          (direntry->d_name[0] == '#' || direntry->d_name[0] == '~' ||
           direntry->d_name[0] == '.') )

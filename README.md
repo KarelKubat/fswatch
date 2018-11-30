@@ -23,10 +23,18 @@ such changes are detected. This is mostly useful when developing.
    them. You want to rerun it as soon as something changes in the data files:
 
    ```shell
-   fswatch -d ~/data python3`
+   fswatch -d ~/data python3 myscript.py`
    ```
 
    Here, flag `-d` adds a directory (plus its subdirs) to be watched.
+
+*  Or, combined: you want to watch for any changes in your `~/src` directory,
+   and for changes in `~/data`, and rerun the script when anything changes:
+
+   ```shell
+   cd ~/src
+   fswatch -d . -d ~/data  python3 myscript.py
+   ```
 
 *  Imagine that you are developing a program `myprog` that's built using
    `make`. As soon as you make a change to the sources, you want to re-run
@@ -57,6 +65,9 @@ of the flags that might need explaining, are:
    files, ones that start with `#` or `~` or `.`. If you want `fswatch` to
    also monitor such files, add a `-a`.
 
+*  `-f`: Using this flag you can add separate files to the watchlist. Not just
+   just directories can be watched, you can limit to singular files.
+
 *  `-K`: Without this flag, `fswatch` will stop when it has no more files
    to watch. If the watched directory might become empty, but `fswatch` should
    patiently wait for new files, add `-K`.
@@ -73,7 +84,7 @@ makes `fswatch` locally (in the sources directory).
 
 If you want to install the program into `$HOME/bin` (i.e., your personal *bin*
 directory), then type `make install` (or `make me a sandwich` if you are so
-inclined). 
+inclined).
 
 If you want to install it into another directory, e.g. `/usr/local/bin`, type
 

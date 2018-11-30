@@ -7,9 +7,9 @@ PRG     = fswatch
 BINDIR ?= $$HOME/bin
 TAR    ?= /tmp/fswatch.tar.gz
 AUTHOR  = "Karel Kubat <karel@kubat.nl>"
-URL     = "http://www.kubat.nl/pages/fswatch"
+URL     = "https://github.com/KarelKubat/fswatch"
 YEARS   = "2015 ff."
-VER     = "1.12"
+VER     = "1.13"
 
 $(PRG): $(OBJ)
 	c++ -g -o $(PRG) $(OBJ)

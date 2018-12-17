@@ -9,7 +9,7 @@ TAR    ?= /tmp/fswatch.tar.gz
 AUTHOR  = "Karel Kubat <karel@kubat.nl>"
 URL     = "https://github.com/KarelKubat/fswatch"
 YEARS   = "2015 ff."
-VER     = "1.13"
+VER     = "1.14"
 
 $(PRG): $(OBJ)
 	c++ -g -o $(PRG) $(OBJ)

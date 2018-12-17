@@ -99,7 +99,7 @@ int main(int argc, char **argv) {
   char **command = argv + optind;
 
   // Watch cwd if no --dirs were seen and no --file is given.
-  if (!watchfiles.size())
+  if (!watchfiles.size() && !watchdirs.size())
     watchdirs.push_back(".");
 
   FsState state(watchdirs, watchfiles, keepscanning, allfiles);

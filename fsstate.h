@@ -33,6 +33,8 @@ class FsState {
   void sortentries();
   unsigned sz;
   static bool be_silent;
+
+  void report_difference(FsState const &other) const;
 };
 
 #endif // _FSSTATE_H_

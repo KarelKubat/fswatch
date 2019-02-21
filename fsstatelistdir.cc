@@ -23,8 +23,11 @@ void FsState::listdir(std::string sdir, bool scanallfiles) {
 
   struct dirent *direntry;
   while ( (direntry = readdir(d)) ) {
-    // Skip . and ..
-    if (!strcmp(direntry->d_name, ".") || !strcmp(direntry->d_name, ".."))
+    // Skip . and .. Also, emacs with flycheck for `file.cc` creates
+    // `flycheckfile.cc` just for a short time, which is annoying.
+    if (!strcmp(direntry->d_name, ".") || !strcmp(direntry->d_name, "..") ||
+        (strlen(direntry->d_name) > 7 &&
+         !strncmp(direntry->d_name, "flycheck", 7)))
       continue;
 
     // Ignore editor savefiles etc

@@ -18,9 +18,11 @@ void FsState::report_difference(FsState const &other) const {
   }
 
   unsigned nshown = 0;
-  while (this_index < sz && that_index) {
+  while (this_index < sz && that_index < other.sz) {
+    msg << "[this] " << entry[this_index].name << '\n';
+    msg << "[that] " << other.entry[that_index].name << '\n';
     // Same files? Compare next.
-    if (entry[this_index].name == entry[that_index].name) {
+    if (entry[this_index].name == other.entry[that_index].name) {
       ++this_index;
       ++that_index;
       continue;
@@ -36,11 +38,17 @@ void FsState::report_difference(FsState const &other) const {
     // Disappeared
     msg << "[fswatch] " << entry[this_index].name << " has disappeared\n";
     ++that_index;
-    
+
     // Limit output
     if (++nshown >= MAX_TO_SHOW) {
       msg << "[fswatch] more differences are not shown\n";
       return;
     }
   }
+
+  // Must be at the end
+  if (this_index < sz)
+    msg << "[fswatch] " << entry[sz].name << " has appeared\n";
+  else
+    msg << "[fswatch] " << entry[other.sz].name << " has appeared\n";
 }

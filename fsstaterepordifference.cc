@@ -19,8 +19,11 @@ void FsState::report_difference(FsState const &other) const {
 
   unsigned nshown = 0;
   while (this_index < sz && that_index < other.sz) {
-    msg << "[this] " << entry[this_index].name << '\n';
-    msg << "[that] " << other.entry[that_index].name << '\n';
+    /* printf debugging is the best debugging      
+      msg << "[this] " << entry[this_index].name << '\n';
+      msg << "[that] " << other.entry[that_index].name << '\n';
+    */
+    
     // Same files? Compare next.
     if (entry[this_index].name == other.entry[that_index].name) {
       ++this_index;

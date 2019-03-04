@@ -9,11 +9,11 @@ void FsState::report_difference(FsState const &other) const {
 
   // Sudden (dis)|(re)appearance? Report as oneliner.
   if (!sz) {
-    msg << "[fswatch] all files have disappeared\n";
+    msg << "[fswatch] files have appeared\n";
     return;
   }
   if (!other.sz) {
-    msg << "[fswatch] files have appeared\n";
+    msg << "[fswatch] all files have disappeared\n";
     return;
   }
 
@@ -24,6 +24,9 @@ void FsState::report_difference(FsState const &other) const {
       msg << "[that] " << other.entry[that_index].name << '\n';
     */
     
+    // std::cout << "comparing this: " << entry[this_index].name
+    // << " that: " << other.entry[that_index].name << '\n';
+
     // Same files? Compare next.
     if (entry[this_index].name == other.entry[that_index].name) {
       ++this_index;
@@ -31,16 +34,22 @@ void FsState::report_difference(FsState const &other) const {
       continue;
     }
 
-    // Appeared?
-    if (sz > other.sz) {
-      msg << "[fswatch] " << entry[this_index].name << " has (re)appeared\n";
-      ++this_index;
-      continue;
-    }
+    // std::cout << "at difference this: " << entry[this_index].name
+    // << " that: " << other.entry[that_index].name << '\n';
 
-    // Disappeared
-    msg << "[fswatch] " << entry[this_index].name << " has disappeared\n";
-    ++that_index;
+    if (sz > other.sz) {
+      // New entry has appeared
+      msg << "[fswatch] " << entry[this_index].name << " has disppeared\n";
+      ++this_index;
+      ++nshown;
+      continue;
+    } else if (sz < other.sz) {
+      // Existing entry has disappeared
+      msg << "[fswatch] " << other.entry[that_index].name
+	  << " has (re)appeared\n";
+      ++that_index;
+      ++nshown;
+    }
 
     // Limit output
     if (++nshown >= MAX_TO_SHOW) {
@@ -48,10 +57,4 @@ void FsState::report_difference(FsState const &other) const {
       return;
     }
   }
-
-  // Must be at the end
-  if (this_index < sz)
-    msg << "[fswatch] " << entry[sz].name << " has appeared\n";
-  else
-    msg << "[fswatch] " << entry[other.sz].name << " has appeared\n";
 }
